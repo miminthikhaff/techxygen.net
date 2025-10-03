@@ -38,6 +38,17 @@ export default function AdminLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { adminProfile, signOut } = useAuth()
   const pathname = usePathname()
+  const hour = new Date().getHours()
+  const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'
+
+  // Do not render the admin chrome (sidebar/topbar) on the public login page
+  if (pathname === '/admin/login') {
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+        {children}
+      </div>
+    )
+  }
 
   const handleLogout = async () => {
     await signOut()
@@ -61,14 +72,14 @@ export default function AdminLayout({
       }`}>
         <div className="flex flex-col h-full">
           {/* Logo and close button */}
-          <div className="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-700">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-[#3A0519] to-[#A53860] rounded-xl flex items-center justify-center shadow-lg">
-                <User className="h-6 w-6 text-white" />
+          <div className="flex items-center justify-between p-3.5 border-b border-slate-200 dark:border-slate-700">
+            <div className="flex items-center space-x-2">
+              <div className="w-9 h-9 bg-gradient-to-br from-[#3A0519] to-[#A53860] rounded-xl flex items-center justify-center shadow-lg">
+                <User className="h-5 w-5 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-slate-900 dark:text-white">TechXygen</h1>
-                <p className="text-sm text-slate-500 dark:text-slate-400">Admin Panel</p>
+                <h1 className="text-lg font-bold text-slate-900 dark:text-white">TechXygen</h1>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Admin Panel</p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
@@ -111,33 +122,7 @@ export default function AdminLayout({
             })}
           </nav>
 
-          {/* User profile and logout */}
-          <div className="p-6 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
-            {adminProfile && (
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-[#3A0519] to-[#A53860] rounded-full flex items-center justify-center shadow-lg">
-                  <User className="h-6 w-6 text-white" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">
-                    {adminProfile.name}
-                  </p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 capitalize">
-                    {adminProfile.role.replace('_', ' ')}
-                  </p>
-                </div>
-              </div>
-            )}
-            <Button
-              onClick={handleLogout}
-              variant="outline"
-              size="sm"
-              className="w-full text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 border-red-200 hover:border-red-300"
-            >
-              <LogOut className="mr-2 h-4 w-4" />
-              Logout
-            </Button>
-          </div>
+          {/* Sidebar footer removed per request */}
         </div>
       </div>
 
@@ -145,7 +130,7 @@ export default function AdminLayout({
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top bar */}
         <div className="sticky top-0 z-30 bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border-b border-slate-200 dark:border-slate-700 shadow-sm">
-          <div className="flex items-center justify-between px-6 py-4">
+          <div className="flex items-center justify-between px-6 py-5">
             <div className="flex items-center space-x-4">
               <Button
                 variant="ghost"
@@ -156,7 +141,7 @@ export default function AdminLayout({
                 <Menu className="h-5 w-5" />
               </Button>
               <div className="hidden lg:block">
-                <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
+                <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
                   {pathname === '/admin/dashboard' && 'Dashboard'}
                   {pathname === '/admin/jobs' && 'Job Postings'}
                   {pathname === '/admin/applications' && 'Applications'}
@@ -167,9 +152,27 @@ export default function AdminLayout({
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="text-sm text-slate-500 dark:text-slate-400">
-                Welcome back, {adminProfile?.name}
+              <div className="hidden md:flex items-center space-x-3">
+                <div className="leading-tight">
+                  <div className="text-sm font-medium text-slate-700 dark:text-slate-200">
+                    {greeting}, {adminProfile?.name ?? 'Admin'}
+                  </div>
+                  {adminProfile?.role && (
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400 capitalize">
+                      {adminProfile.role.replace('_', ' ')}
+                    </div>
+                  )}
+                </div>
               </div>
+              <Button
+                onClick={handleLogout}
+                variant="outline"
+                size="sm"
+                className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                Logout
+              </Button>
             </div>
           </div>
         </div>

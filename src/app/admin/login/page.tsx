@@ -111,19 +111,19 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-pink-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-pink-950/30 flex items-center justify-center p-4">
+    <div className="min-h-[100dvh] overflow-hidden bg-gradient-to-br from-slate-50 via-white to-pink-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-pink-950/30 flex items-center justify-center p-3 sm:p-4">
       {/* Background Elements */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute -top-40 -right-32 w-96 h-96 bg-gradient-to-br from-[#3A0519]/20 to-[#A53860]/20 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute -bottom-40 -left-32 w-96 h-96 bg-gradient-to-tr from-[#670D2F]/20 to-[#EF88AD]/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
       </div>
 
-      <Card className="w-full max-w-md bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-white/30 dark:border-slate-700/30 shadow-2xl">
-        <CardHeader className="text-center pb-6">
-          <div className="h-16 w-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-[#3A0519]/10 to-[#A53860]/10 flex items-center justify-center">
+      <Card className="w-full max-w-sm sm:max-w-md bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-white/30 dark:border-slate-700/30 shadow-xl">
+        <CardHeader className="text-center pb-3 sm:pb-5">
+          <div className="h-12 w-12 sm:h-16 sm:w-16 mx-auto mb-3 sm:mb-4 rounded-2xl bg-gradient-to-br from-[#3A0519]/10 to-[#A53860]/10 flex items-center justify-center">
             <Shield className="h-8 w-8 text-[#3A0519] dark:text-[#A53860]" />
           </div>
-          <CardTitle className="text-2xl font-bold bg-gradient-to-r from-[#3A0519] to-[#A53860] bg-clip-text text-transparent">
+          <CardTitle className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-[#3A0519] to-[#A53860] bg-clip-text text-transparent">
             Admin Portal
           </CardTitle>
           <CardDescription className="text-slate-600 dark:text-slate-300">
@@ -132,7 +132,7 @@ export default function AdminLoginPage() {
         </CardHeader>
         
         <CardContent>
-          <form onSubmit={handleLogin} className="space-y-6">
+          <form onSubmit={handleLogin} className="space-y-4 sm:space-y-6">
             {error && (
               <div className="flex items-center space-x-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
                 <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400" />
@@ -186,7 +186,7 @@ export default function AdminLoginPage() {
             <Button
               type="submit"
               disabled={isLoading || isGoogleLoading}
-              className="w-full bg-gradient-to-r from-[#3A0519] to-[#A53860] hover:from-[#670D2F] hover:to-[#EF88AD] rounded-full py-6 text-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+              className="w-full bg-gradient-to-r from-[#3A0519] to-[#A53860] hover:from-[#670D2F] hover:to-[#EF88AD] rounded-full py-4 sm:py-6 text-base sm:text-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300"
             >
               {isLoading ? (
                 <>
@@ -204,7 +204,7 @@ export default function AdminLoginPage() {
           </form>
 
           {/* Divider */}
-          <div className="relative my-6">
+          <div className="relative my-3 sm:my-5">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-slate-200 dark:border-slate-700"></div>
             </div>
@@ -221,7 +221,7 @@ export default function AdminLoginPage() {
             variant="outline"
             onClick={handleGoogleLogin}
             disabled={isLoading || isGoogleLoading}
-            className="w-full border-2 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 rounded-full py-6 text-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+            className="w-full border-2 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 rounded-full py-4 sm:py-6 text-base sm:text-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300"
           >
             {isGoogleLoading ? (
               <>
@@ -236,20 +236,10 @@ export default function AdminLoginPage() {
             )}
           </Button>
 
-          {/* Setup Instructions */}
-          <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-            <h4 className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-2">Setup Required:</h4>
-            <div className="text-xs text-blue-700 dark:text-blue-300 space-y-1">
-              <p>1. Create a Supabase project</p>
-              <p>2. Set up admin_profiles table</p>
-              <p>3. Add environment variables</p>
-              <p>4. Enable Google OAuth (optional)</p>
-              <p>5. Create your admin account</p>
-            </div>
-          </div>
+          {/* Removed setup instructions for production */}
 
           {/* Security Notice */}
-          <div className="mt-4 text-center">
+          <div className="mt-3 sm:mt-4 text-center">
             <p className="text-xs text-slate-500 dark:text-slate-400">
               🔒 This is a secure admin portal. All activities are logged and monitored.
             </p>

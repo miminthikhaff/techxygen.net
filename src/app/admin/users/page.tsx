@@ -6,6 +6,10 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { DataTable, SelectColumnCell, SelectColumnHeader } from '@/components/ui/data-table'
+import { type ColumnDef } from '@tanstack/react-table'
+import UserForm from '@/components/ui/user-form'
+import { createUser, updateUser, deleteUser as svcDeleteUser, type AdminUser as AdminUserType, ROLE_META } from '@/lib/admin/users'
 import { 
   UserPlus, 
   Edit, 
@@ -15,27 +19,20 @@ import {
   Calendar,
   CheckCircle,
   XCircle,
+  Save,
   Search,
   
 } from 'lucide-react'
+import { ArrowUpDown } from 'lucide-react'
 
-interface AdminUser {
-  id: string
-  user_id: string
-  name: string
-  email: string
-  role: 'super_admin' | 'hr_admin' | 'content_admin'
-  created_at: string
-  last_login?: string
-  is_active: boolean
-}
+type AdminUser = AdminUserType
 
 export default function UsersPage() {
   const adminProfile = { role: 'super_admin' as const }
   const [users, setUsers] = useState<AdminUser[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isCreating, setIsCreating] = useState(false)
-  // const [editingUser, setEditingUser] = useState<AdminUser | null>(null)
+  const [editingUser, setEditingUser] = useState<AdminUser | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [newUser, setNewUser] = useState({
     name: '',
@@ -104,26 +101,16 @@ export default function UsersPage() {
     )
   }
 
-  const handleCreateUser = async (e: React.FormEvent) => {
-    e.preventDefault()
-    // Mock user creation - replace with actual Supabase queries
-    const newUserData: AdminUser = {
-      id: Date.now().toString(),
-      user_id: `user-${Date.now()}`,
-      name: newUser.name,
-      email: newUser.email,
-      role: newUser.role,
-      created_at: new Date().toISOString(),
-      is_active: true
-    }
-    
-    setUsers(prev => [...prev, newUserData])
+  const handleCreateUser = async () => {
+    const created = await createUser(newUser)
+    setUsers(prev => [...prev, created])
     setNewUser({ name: '', email: '', role: 'hr_admin', password: '' })
     setIsCreating(false)
   }
 
-  const handleDeleteUser = (userId: string) => {
+  const handleDeleteUser = async (userId: string) => {
     if (confirm('Are you sure you want to delete this user?')) {
+      await svcDeleteUser(userId)
       setUsers(prev => prev.filter(user => user.id !== userId))
     }
   }
@@ -132,6 +119,13 @@ export default function UsersPage() {
     setUsers(prev => prev.map(user => 
       user.id === userId ? { ...user, is_active: !user.is_active } : user
     ))
+  }
+
+  const handleUpdateUser = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!editingUser) return
+    setUsers(prev => prev.map(u => (u.id === editingUser.id ? editingUser : u)))
+    setEditingUser(null)
   }
 
   if (isLoading) {
@@ -144,6 +138,91 @@ export default function UsersPage() {
       </div>
     )
   }
+
+  // Define columns for DataTable
+  const columns: ColumnDef<AdminUser>[] = [
+    {
+      id: 'select',
+      header: ({ table }) => <SelectColumnHeader table={table} />,
+      cell: ({ row }) => <SelectColumnCell row={row} />, 
+      enableSorting: false,
+      enableHiding: false,
+    },
+    { 
+      accessorKey: 'name', 
+      header: ({ column }) => (
+        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          Name
+          <ArrowUpDown className="ml-1 h-4 w-4" />
+        </Button>
+      )
+    },
+    { 
+      accessorKey: 'email', 
+      header: ({ column }) => (
+        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          Email
+          <ArrowUpDown className="ml-1 h-4 w-4" />
+        </Button>
+      )
+    },
+    {
+      accessorKey: 'role',
+      header: ({ column }) => (
+        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          Role
+          <ArrowUpDown className="ml-1 h-4 w-4" />
+        </Button>
+      ),
+      cell: ({ row }) => getRoleBadge(row.original.role),
+    },
+    {
+      accessorKey: 'is_active',
+      header: ({ column }) => (
+        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          Status
+          <ArrowUpDown className="ml-1 h-4 w-4" />
+        </Button>
+      ),
+      cell: ({ row }) => (
+        row.original.is_active ? (
+          <Badge className="bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400 border-0">Active</Badge>
+        ) : (
+          <Badge className="bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400 border-0">Inactive</Badge>
+        )
+      ),
+    },
+    {
+      id: 'actions',
+      header: 'Actions',
+      cell: ({ row }) => (
+        <div className="flex gap-2">
+          {/* Toggle Active/Inactive */}
+          <Button
+            variant="outline"
+            size="icon"
+            aria-label={row.original.is_active ? 'Deactivate user' : 'Activate user'}
+            onClick={() => handleToggleUserStatus(row.original.id)}
+          >
+            {row.original.is_active ? (
+              <XCircle className="h-4 w-4 text-red-600" />
+            ) : (
+              <CheckCircle className="h-4 w-4 text-green-600" />
+            )}
+          </Button>
+          {/* Edit */}
+          <Button variant="outline" size="icon" aria-label="Edit user" onClick={() => setEditingUser(row.original)}>
+            <Edit className="h-4 w-4" />
+          </Button>
+          {row.original.role !== 'super_admin' && (
+            <Button variant="outline" size="icon" aria-label="Delete user" className="text-red-600 hover:text-red-700" onClick={() => handleDeleteUser(row.original.id)}>
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
+      )
+    }
+  ]
 
   return (
     <div>
@@ -166,95 +245,14 @@ export default function UsersPage() {
           </Button>
         </div>
 
-        {/* Search */}
-        <div className="mb-6">
-          <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-            <Input
-              placeholder="Search users..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-        </div>
+        {/* Search removed; use DataTable filter */}
 
-        {/* Users List */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredUsers.map((user) => (
-            <Card key={user.id} className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm border border-white/30 dark:border-slate-700/30">
-              <CardContent className="p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-1">
-                      {user.name}
-                    </h3>
-                    <div className="flex items-center gap-2 mb-2">
-                      {getRoleBadge(user.role)}
-                      {user.is_active ? (
-                        <Badge className="bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400 border-0">
-                          <CheckCircle className="h-3 w-3 mr-1" />
-                          Active
-                        </Badge>
-                      ) : (
-                        <Badge className="bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400 border-0">
-                          <XCircle className="h-3 w-3 mr-1" />
-                          Inactive
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
-                  <div className="flex gap-1">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                  >
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    {user.role !== 'super_admin' && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDeleteUser(user.id)}
-                        className="text-red-600 hover:text-red-700"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    )}
-                  </div>
-                </div>
-
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-                    <Mail className="h-4 w-4" />
-                    {user.email}
-                  </div>
-                  <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-                    <Calendar className="h-4 w-4" />
-                    Joined {new Date(user.created_at).toLocaleDateString()}
-                  </div>
-                  {user.last_login && (
-                    <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-                      <CheckCircle className="h-4 w-4" />
-                      Last login {new Date(user.last_login).toLocaleDateString()}
-                    </div>
-                  )}
-                </div>
-
-                <div className="mt-4 flex gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleToggleUserStatus(user.id)}
-                    className="flex-1"
-                  >
-                    {user.is_active ? 'Deactivate' : 'Activate'}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        {/* Users Table */}
+        <Card className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm border border-white/30 dark:border-slate-700/30">
+          <CardContent className="p-6">
+            <DataTable columns={columns} data={filteredUsers} filterColumn="email" filterPlaceholder="Filter users by email..." />
+          </CardContent>
+        </Card>
 
         {/* Create User Modal */}
         {isCreating && (
@@ -269,42 +267,56 @@ export default function UsersPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleCreateUser} className="space-y-4">
+                <UserForm
+                  submitLabel="Create User"
+                  onCancel={() => setIsCreating(false)}
+                  onSubmit={async (payload) => {
+                    setNewUser(payload)
+                    await handleCreateUser()
+                  }}
+                />
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Edit User Modal */}
+        {editingUser && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <Card className="w-full max-w-md bg-white dark:bg-slate-900 border border-white/20 dark:border-slate-700/20 shadow-2xl">
+              <CardHeader>
+                <CardTitle className="text-2xl font-bold bg-gradient-to-r from-[#3A0519] to-[#A53860] bg-clip-text text-transparent">
+                  Edit User
+                </CardTitle>
+                <CardDescription>Update user details.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleUpdateUser} className="space-y-4">
                   <div>
-                    <Label htmlFor="name">Full Name</Label>
+                    <Label htmlFor="edit-name">Full Name</Label>
                     <Input
-                      id="name"
-                      value={newUser.name}
-                      onChange={(e) => setNewUser(prev => ({ ...prev, name: e.target.value }))}
+                      id="edit-name"
+                      value={editingUser.name}
+                      onChange={(e) => setEditingUser(prev => prev ? { ...prev, name: e.target.value } : prev)}
                       required
                     />
                   </div>
                   <div>
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="edit-email">Email</Label>
                     <Input
-                      id="email"
+                      id="edit-email"
                       type="email"
-                      value={newUser.email}
-                      onChange={(e) => setNewUser(prev => ({ ...prev, email: e.target.value }))}
+                      value={editingUser.email}
+                      onChange={(e) => setEditingUser(prev => prev ? { ...prev, email: e.target.value } : prev)}
                       required
                     />
                   </div>
                   <div>
-                    <Label htmlFor="password">Password</Label>
-                    <Input
-                      id="password"
-                      type="password"
-                      value={newUser.password}
-                      onChange={(e) => setNewUser(prev => ({ ...prev, password: e.target.value }))}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="role">Role</Label>
+                    <Label htmlFor="edit-role">Role</Label>
                     <select
-                      id="role"
-                      value={newUser.role}
-                      onChange={(e) => setNewUser(prev => ({ ...prev, role: e.target.value as 'super_admin' | 'hr_admin' | 'content_admin' }))}
+                      id="edit-role"
+                      value={editingUser.role}
+                      onChange={(e) => setEditingUser(prev => prev ? { ...prev, role: e.target.value as AdminUser['role'] } : prev)}
                       className="w-full p-2 border border-slate-200 dark:border-slate-700 rounded-md bg-white dark:bg-slate-800"
                     >
                       <option value="hr_admin">HR Admin</option>
@@ -315,19 +327,9 @@ export default function UsersPage() {
                     </select>
                   </div>
                   <div className="flex gap-2 pt-4">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setIsCreating(false)}
-                      className="flex-1"
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      type="submit"
-                      className="flex-1 bg-gradient-to-r from-[#3A0519] to-[#A53860] hover:from-[#670D2F] hover:to-[#EF88AD]"
-                    >
-                      Create User
+                    <Button type="button" variant="outline" onClick={() => setEditingUser(null)} className="flex-1">Cancel</Button>
+                    <Button type="submit" className="flex-1 bg-gradient-to-r from-[#3A0519] to-[#A53860] hover:from-[#670D2F] hover:to-[#EF88AD]">
+                      <Save className="h-4 w-4 mr-2" /> Save Changes
                     </Button>
                   </div>
                 </form>

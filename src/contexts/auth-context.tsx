@@ -47,20 +47,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (error) {
         console.error('Error fetching admin profile:', error)
-        // For demo purposes, create a mock admin profile if table doesn't exist
-        if (error.code === 'PGRST116' || error.message.includes('relation "admin_profiles" does not exist')) {
-          console.log('Admin profiles table not found, using mock data for demo')
-          setAdminProfile({
-            id: 'demo-admin',
-            user_id: userId,
-            role: 'super_admin',
-            name: 'Demo Admin',
-            email: 'admin@techxygen.net',
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          })
-          return
-        }
         setAdminProfile(null)
         return
       }
@@ -68,17 +54,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setAdminProfile(data)
     } catch (error) {
       console.error('Error fetching admin profile:', error)
-      // For demo purposes, create a mock admin profile
-      console.log('Using mock admin profile for demo')
-      setAdminProfile({
-        id: 'demo-admin',
-        user_id: userId,
-        role: 'super_admin',
-        name: 'Demo Admin',
-        email: 'admin@techxygen.net',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      })
+      setAdminProfile(null)
     }
   }
 
@@ -149,9 +125,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const signOut = async () => {
-    await supabase.auth.signOut()
-    setAdminProfile(null)
-    router.push('/admin/login')
+    try {
+      await supabase.auth.signOut()
+    } catch (e) {
+      console.error('Sign out error:', e)
+    } finally {
+      setAdminProfile(null)
+      // Use replace to avoid back navigation to protected page
+      router.replace('/admin/login')
+      // Force a hard navigation as a fallback to ensure cookies sync
+      setTimeout(() => {
+        if (typeof window !== 'undefined') {
+          window.location.href = '/admin/login'
+        }
+      }, 50)
+    }
   }
 
   const isAdmin = !!adminProfile
