@@ -73,7 +73,7 @@ export function Hero() {
                  initial={{ opacity: 0, y: prefersReduced ? 0 : 16 }}
                  animate={{ opacity: 1, y: 0 }}
                  transition={{ duration: 0.6 }}
-                 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-8 leading-tight"
+                 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight mb-6 sm:mb-8 leading-tight"
                >
                  <span className="block bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 dark:from-white dark:via-slate-200 dark:to-white bg-clip-text text-transparent">We build reliable</span>
                  <span className="block bg-gradient-to-r from-[#3A0519] via-[#A53860] to-[#EF88AD] bg-clip-text text-transparent">software and AI solutions.</span>
@@ -84,7 +84,7 @@ export function Hero() {
                  initial={{ opacity: 0, y: prefersReduced ? 0 : 16 }}
                  animate={{ opacity: 1, y: 0 }}
                  transition={{ delay: 0.15, duration: 0.6 }}
-                 className="text-xl sm:text-2xl text-slate-600 dark:text-slate-300 mb-12 max-w-2xl leading-relaxed font-light"
+                 className="text-base sm:text-xl lg:text-2xl text-slate-600 dark:text-slate-300 mb-8 sm:mb-12 max-w-2xl leading-relaxed font-light"
                >
                  We collaborate with enterprises, startups, and public sector teams to plan, build, and evolve modern products — cloud-ready, secure, and grounded in measurable outcomes.
                </motion.p>
@@ -94,15 +94,15 @@ export function Hero() {
                  initial={{ opacity: 0, y: prefersReduced ? 0 : 16 }}
                  animate={{ opacity: 1, y: 0 }}
                  transition={{ delay: 0.3, duration: 0.6 }}
-                 className="flex flex-col sm:flex-row gap-6 justify-center lg:justify-start items-center mb-16"
+                 className="flex flex-col md:flex-row gap-4 md:gap-6 justify-center lg:justify-start items-center mb-10 md:mb-16"
                >
-                 <Button asChild size="lg" className="text-lg px-10 py-6 rounded-full bg-gradient-to-r from-[#3A0519] to-[#A53860] hover:from-[#670D2F] hover:to-[#EF88AD] shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 group">
+                 <Button asChild size="lg" className="text-base md:text-lg px-8 md:px-10 py-5 md:py-6 rounded-full bg-gradient-to-r from-[#3A0519] to-[#A53860] hover:from-[#670D2F] hover:to-[#EF88AD] shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 group w-full md:w-auto">
                   <Link href="/contact">
                     Book a free consultation
                     <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </Button>
-                <Button variant="outline" size="lg" className="text-lg px-10 py-6 rounded-full border-2 border-[#A53860] text-[#3A0519] hover:bg-[#A53860] hover:text-white dark:border-[#EF88AD] dark:text-[#EF88AD] dark:hover:bg-[#EF88AD] dark:hover:text-[#3A0519] transition-all duration-300 transform hover:scale-105 group">
+                 <Button variant="outline" size="lg" className="text-base md:text-lg px-8 md:px-10 py-5 md:py-6 rounded-full border-2 border-[#A53860] text-[#3A0519] hover:bg-[#A53860] hover:text-white dark:border-[#EF88AD] dark:text-[#EF88AD] dark:hover:bg-[#EF88AD] dark:hover:text-[#3A0519] transition-all duration-300 transform hover:scale-105 group w-full md:w-auto">
                   <Play className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
                   See recent work
                 </Button>
@@ -113,14 +113,14 @@ export function Hero() {
                  initial={{ opacity: 0, y: prefersReduced ? 0 : 16 }}
                  animate={{ opacity: 1, y: 0 }}
                  transition={{ delay: 0.45, duration: 0.6 }}
-                 className="flex flex-wrap gap-4 justify-center lg:justify-start"
+                 className="flex flex-wrap gap-3 sm:gap-4 justify-center lg:justify-start"
                >
                  {techStack.map((tech) => {
                   const IconComponent = tech.icon
                   return (
-                    <div key={tech.name} className="flex items-center space-x-2 px-4 py-2 rounded-full bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-white/20">
-                      <IconComponent className="h-4 w-4 text-[#3A0519] dark:text-[#A53860]" />
-                      <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{tech.name}</span>
+                      <div key={tech.name} className="flex items-center space-x-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-white/20">
+                        <IconComponent className="h-4 w-4 text-[#3A0519] dark:text-[#A53860]" />
+                        <span className="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300">{tech.name}</span>
                     </div>
                   )
                 })}
@@ -128,9 +128,9 @@ export function Hero() {
             </div>
 
             {/* Right-side visual only on large screens (Framer Motion parallax stack) */}
-            <div className="lg:col-span-5 hidden lg:block">
+            <div className="lg:col-span-5">
               <div
-                className="relative h-[520px] rounded-3xl overflow-hidden border border-white/20 dark:border-slate-800 bg-gradient-to-br from-white to-[#EF88AD14] dark:from-slate-900 dark:to-[#3A051920]"
+                className="relative h-[360px] sm:h-[460px] lg:h-[520px] rounded-3xl overflow-hidden border border-white/20 dark:border-slate-800 bg-gradient-to-br from-white to-[#EF88AD14] dark:from-slate-900 dark:to-[#3A051920]"
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
               >

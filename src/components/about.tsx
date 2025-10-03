@@ -155,18 +155,18 @@ export function About() {
 
         {/* Enterprise CTA Section */}
         <div className={`text-center transition-all duration-1000 delay-1800 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-          <div className="max-w-4xl mx-auto p-8 rounded-3xl bg-gradient-to-br from-white/80 to-[#EF88AD]/10 dark:from-slate-800/80 dark:to-[#3A0519]/20 backdrop-blur-sm border border-white/20 dark:border-slate-700/50 shadow-xl">
-            <h3 className="text-3xl font-bold mb-4 bg-gradient-to-r from-slate-900 to-[#3A0519] dark:from-white dark:to-[#A53860] bg-clip-text text-transparent">
+          <div className="max-w-4xl mx-auto p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-white/80 to-[#EF88AD]/10 dark:from-slate-800/80 dark:to-[#3A0519]/20 backdrop-blur-sm border border-white/20 dark:border-slate-700/50 shadow-xl">
+            <h3 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-slate-900 to-[#3A0519] dark:from-white dark:to-[#A53860] bg-clip-text text-transparent">
               Ready to Partner with Enterprise Experts?
             </h3>
-            <p className="text-slate-600 dark:text-slate-300 mb-8 leading-relaxed text-lg">
+            <p className="text-slate-600 dark:text-slate-300 mb-6 sm:mb-8 leading-relaxed text-base sm:text-lg">
               Let&apos;s discuss your enterprise requirements and design a comprehensive technology strategy that drives business growth.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button asChild size="lg" className="bg-gradient-to-r from-[#3A0519] to-[#A53860] hover:from-[#670D2F] hover:to-[#EF88AD] rounded-full px-8 py-6 text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+            <div className="flex flex-col md:flex-row gap-3 md:gap-4 justify-center items-center">
+              <Button asChild size="lg" className="w-full sm:w-auto bg-gradient-to-r from-[#3A0519] to-[#A53860] hover:from-[#670D2F] hover:to-[#EF88AD] rounded-full px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
                 <a href="/contact">Schedule Enterprise Consultation</a>
               </Button>
-              <Button variant="outline" size="lg" className="border-2 border-[#A53860] text-[#3A0519] hover:bg-[#A53860] hover:text-white dark:border-[#EF88AD] dark:text-[#EF88AD] dark:hover:bg-[#EF88AD] dark:hover:text-[#3A0519] rounded-full px-8 py-6 text-lg transition-all duration-300 transform hover:scale-105">
+              <Button variant="outline" size="lg" className="w-full sm:w-auto border-2 border-[#A53860] text-[#3A0519] hover:bg-[#A53860] hover:text-white dark:border-[#EF88AD] dark:text-[#EF88AD] dark:hover:bg-[#EF88AD] dark:hover:text-[#3A0519] rounded-full px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg transition-all duration-300 transform hover:scale-105">
                 Download Enterprise Portfolio
               </Button>
             </div>
