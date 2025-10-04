@@ -29,10 +29,10 @@ export function Services({ services }: ServicesProps) {
   const [isVisible, setIsVisible] = useState(false)
 
   const enterpriseMetrics = [
-    { label: 'Uptime SLA', value: '99.9%', icon: Shield },
-    { label: 'Response Time', value: '< 100ms', icon: Zap },
-    { label: 'Client Satisfaction', value: '98%', icon: Star },
-    { label: 'Growth Rate', value: '+150%', icon: TrendingUp }
+    { label: 'From Case Studies', value: 'Proven Outcomes', icon: TrendingUp },
+    { label: 'Reliability (Error Budgets)', value: 'SLO-backed', icon: Star },
+    { label: 'Security & Compliance', value: 'SOC2/ISO-ready', icon: Shield },
+    { label: 'Response & Resolution', value: 'Support SLAs', icon: Zap }
   ]
 
   useEffect(() => {
@@ -69,7 +69,7 @@ export function Services({ services }: ServicesProps) {
           </p>
         </div>
 
-        {/* Enterprise Metrics Dashboard */}
+        {/* Capability & Guarantees Dashboard */}
         <div className={`grid grid-cols-2 md:grid-cols-4 gap-6 mb-20 transition-all duration-1000 delay-600 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
           {enterpriseMetrics.map((metric, index) => {
             const IconComponent = metric.icon
@@ -79,7 +79,7 @@ export function Services({ services }: ServicesProps) {
                   <IconComponent className="h-6 w-6 text-[#3A0519] dark:text-[#A53860] group-hover:scale-110 transition-transform duration-300" />
                   <div className="h-2 w-2 rounded-full bg-[#A53860] animate-pulse"></div>
                 </div>
-                <div className="text-2xl font-bold bg-gradient-to-r from-[#3A0519] to-[#A53860] bg-clip-text text-transparent mb-1">
+                <div className="text-lg font-semibold bg-gradient-to-r from-[#3A0519] to-[#A53860] bg-clip-text text-transparent mb-1">
                   {metric.value}
                 </div>
                 <div className="text-sm text-slate-600 dark:text-slate-300 font-medium">

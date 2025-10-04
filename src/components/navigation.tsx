@@ -6,7 +6,7 @@ import { PageContainer } from '@/components/ui/page-container'
 import Image from 'next/image'
 import { Menu, Search, ChevronDown, Globe, Shield, Award } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet'
 import { Input } from '@/components/ui/input'
 
 const navigation = [
@@ -30,6 +30,7 @@ export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [showSearch, setShowSearch] = useState(false)
   const [showEnterpriseMenu, setShowEnterpriseMenu] = useState(false)
+  const [query, setQuery] = useState('')
 
   useEffect(() => {
     const handleScroll = () => {
@@ -132,7 +133,7 @@ export function Navigation() {
           </div>
 
           {/* Mobile Navigation */}
-          <Sheet open={isOpen} onOpenChange={setIsOpen}>
+          <Sheet open={isOpen} onOpenChange={(v) => { setIsOpen(v); if (!v) setQuery('') } }>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden rounded-xl hover:bg-slate-100/50 dark:hover:bg-slate-800/50">
                 <Menu className="h-6 w-6" />
@@ -140,53 +141,56 @@ export function Navigation() {
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-l border-slate-200/50 dark:border-slate-700/50">
-              <div className="flex flex-col space-y-6 mt-8">
+              <SheetTitle className="sr-only">Main navigation</SheetTitle>
+              <div className="flex flex-col space-y-4 mt-8">
                 {/* Mobile Logo */}
-                <div className="flex items-center space-x-3 pb-4 border-b border-slate-200/50 dark:border-slate-700/50">
-                  <div className="h-8 w-8 rounded-lg overflow-hidden">
+                <div className="flex items-center justify-between pb-4 border-b border-slate-200/50 dark:border-slate-700/50 px-4 pr-12">
+                  <div className="flex items-center">
+                  <div className="h-10 w-40 rounded-lg overflow-hidden">
                     <Image
                       src="/techxygen-logo.svg"
                       alt="TechXygen Logo"
                       width={32}
                       height={32}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain"
                     />
                   </div>
-                  <div className="flex flex-col">
-                    <span className="text-lg font-bold text-slate-900 dark:text-white">
-                      TechXygen
-                    </span>
-                    <span className="text-xs text-slate-500 dark:text-slate-400">
-                      Enterprise Solutions
-                    </span>
+                  <span className="sr-only">TechXygen</span>
                   </div>
                 </div>
 
                 {/* Mobile Search */}
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <div className="relative px-4">
+                  <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
                   <Input
                     placeholder="Search..."
-                    className="pl-10 bg-slate-100/50 dark:bg-slate-800/50 border-slate-200/50 dark:border-slate-700/50"
+                    aria-label="Search navigation"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    autoFocus
+                    className="pl-12 bg-slate-100/50 dark:bg-slate-800/50 border-slate-200/50 dark:border-slate-700/50"
                   />
                 </div>
 
                 {/* Navigation Links */}
-                {navigation.map((item) => (
+                {(navigation.filter(i => i.name.toLowerCase().includes(query.toLowerCase()))).map((item) => (
                   <Link
                     key={item.name}
                     href={item.href}
-                    className="text-lg font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors duration-200 py-2 px-4 rounded-lg hover:bg-slate-100/50 dark:hover:bg-slate-800/50"
+                    className="text-base font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors duration-200 py-2 px-4 rounded-lg hover:bg-slate-100/50 dark:hover:bg-slate-800/50"
                     onClick={() => setIsOpen(false)}
                   >
                     {item.name}
                   </Link>
                 ))}
+                {navigation.filter(i => i.name.toLowerCase().includes(query.toLowerCase())).length === 0 && (
+                  <div className="px-4 text-sm text-slate-500">No matches</div>
+                )}
 
                 {/* Enterprise Features */}
                 <div className="border-t border-slate-200/50 dark:border-slate-700/50 pt-4">
                   <h4 className="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-3 px-4">Enterprise</h4>
-                  {enterpriseFeatures.map((feature) => {
+                  {(enterpriseFeatures.filter(f => f.name.toLowerCase().includes(query.toLowerCase()))).map((feature) => {
                     const IconComponent = feature.icon
                     return (
                       <Link
@@ -200,9 +204,12 @@ export function Navigation() {
                       </Link>
                     )
                   })}
+                  {enterpriseFeatures.filter(f => f.name.toLowerCase().includes(query.toLowerCase())).length === 0 && (
+                    <div className="px-4 text-sm text-slate-500">No enterprise matches</div>
+                  )}
                 </div>
 
-                <Button asChild className="mt-6 bg-gradient-to-r from-[#3A0519] to-[#A53860] hover:from-[#670D2F] hover:to-[#EF88AD] rounded-full shadow-lg">
+                <Button asChild className="mt-4 mx-4 bg-gradient-to-r from-[#3A0519] to-[#A53860] hover:from-[#670D2F] hover:to-[#EF88AD] rounded-full shadow-lg">
                   <Link href="/contact" onClick={() => setIsOpen(false)}>
                     Get Started
                   </Link>

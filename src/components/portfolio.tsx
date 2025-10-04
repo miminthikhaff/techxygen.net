@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { ExternalLink, Github, Filter, TrendingUp, Users, Award, Star, ArrowRight, Eye, Calendar, Code2 } from 'lucide-react'
+import { ExternalLink, Github, Filter, Award, Star, ArrowRight, Eye, Calendar, Code2 } from 'lucide-react'
 import Image from 'next/image'
 
 interface Project {
@@ -32,12 +32,7 @@ export function Portfolio({ projects }: PortfolioProps) {
     { id: 'enterprise', label: 'Enterprise', icon: Award }
   ]
 
-  const portfolioStats = [
-    { label: 'Projects Delivered', value: '50+', icon: TrendingUp },
-    { label: 'Client Satisfaction', value: '98%', icon: Star },
-    { label: 'Team Members', value: '12+', icon: Users },
-    { label: 'Years Experience', value: '5+', icon: Award }
-  ]
+  // KPI summary is now shown as a single line under the header to avoid duplication with About section
 
   useEffect(() => {
     setIsVisible(true)
@@ -75,25 +70,10 @@ export function Portfolio({ projects }: PortfolioProps) {
           </p>
         </div>
 
-        {/* Portfolio Stats Dashboard */}
-        <div className={`grid grid-cols-2 md:grid-cols-4 gap-6 mb-16 transition-all duration-1000 delay-600 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-          {portfolioStats.map((stat, index) => {
-            const IconComponent = stat.icon
-            return (
-              <div key={index} className="group p-6 rounded-2xl bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-white/20 dark:border-slate-700/50 hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:scale-105 hover:shadow-lg text-center">
-                <div className="flex items-center justify-center mb-3">
-                  <IconComponent className="h-6 w-6 text-[#3A0519] dark:text-[#A53860] group-hover:scale-110 transition-transform duration-300" />
-                </div>
-                <div className="text-2xl font-bold bg-gradient-to-r from-[#3A0519] to-[#A53860] bg-clip-text text-transparent mb-1">
-                  {stat.value}
-                </div>
-                <div className="text-sm text-slate-600 dark:text-slate-300 font-medium">
-                  {stat.label}
-                </div>
-              </div>
-            )
-          })}
-        </div>
+        {/* KPI Summary (compact, non-duplicative) */}
+        <p className={`text-sm text-slate-500 dark:text-slate-400 text-center mb-12 transition-all duration-1000 delay-600 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+          Over <span className="font-semibold text-slate-700 dark:text-slate-200">50</span> projects delivered with <span className="font-semibold text-slate-700 dark:text-slate-200">98%</span> client satisfaction.
+        </p>
 
         {/* Enterprise Filter System */}
         <div className={`flex flex-wrap justify-center gap-4 mb-16 transition-all duration-1000 delay-800 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
