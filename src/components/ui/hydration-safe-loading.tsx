@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import Image from 'next/image'
 import { RefreshCw } from 'lucide-react'
 
@@ -37,7 +37,7 @@ export function HydrationSafeLoading() {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   // Real progress calculation with fallback
-  const calculateRealProgress = (progress: LoadingProgress) => {
+  const calculateRealProgress = useCallback((progress: LoadingProgress) => {
     // If any component is stuck, use a more aggressive calculation
     const assets = Math.min(progress.assets, 100)
     const components = Math.min(progress.components, 100)
@@ -46,10 +46,10 @@ export function HydrationSafeLoading() {
     // Weighted calculation - assets are most important
     const total = Math.round((assets * 0.4) + (components * 0.3) + (data * 0.3))
     return Math.min(total, 100)
-  }
+  }, [])
 
   // Track asset loading progress with fallback
-  const trackAssetProgress = () => {
+  const trackAssetProgress = useCallback(() => {
     let assetProgress = 0
     let maxProgress = 0
     
@@ -84,10 +84,10 @@ export function HydrationSafeLoading() {
     
     // Clean up after 8 seconds
     setTimeout(() => clearInterval(interval), 8000)
-  }
+  }, [calculateRealProgress])
 
   // Track component mounting progress with fallback
-  const trackComponentProgress = () => {
+  const trackComponentProgress = useCallback(() => {
     let componentProgress = 0
     let maxProgress = 0
     const totalComponents = 4 // Hero, Services, About, Portfolio
@@ -125,10 +125,10 @@ export function HydrationSafeLoading() {
     
     // Clean up after 12 seconds
     setTimeout(() => clearInterval(interval), 12000)
-  }
+  }, [calculateRealProgress])
 
   // Simulate data loading progress with guaranteed completion
-  const trackDataProgress = () => {
+  const trackDataProgress = useCallback(() => {
     let dataProgress = 0
     let incrementCount = 0
     const maxIncrements = 20 // Ensure completion within 6 seconds (20 * 300ms)
@@ -169,8 +169,9 @@ export function HydrationSafeLoading() {
         return updated
       })
     }, 8000)
-  }
+  }, [calculateRealProgress])
 
+  const progressRef = useRef(0)
   useEffect(() => {
     // Ensure we're on the client side
     setIsHydrated(true)
@@ -185,7 +186,7 @@ export function HydrationSafeLoading() {
 
     // Final safety mechanism - force completion after 12 seconds
     const safetyTimer = setTimeout(() => {
-      if (progress < 100) {
+      if (progressRef.current < 100) {
         setRealProgress({ assets: 100, components: 100, data: 100, total: 100 })
         setProgress(100)
         setLoadingState('complete')
@@ -198,10 +199,15 @@ export function HydrationSafeLoading() {
       clearTimeout(timer)
       clearTimeout(safetyTimer)
     }
-  }, [])
+  }, [trackAssetProgress, trackComponentProgress, trackDataProgress])
+
+  // Keep a ref in sync with progress so timers read the latest value without effect deps churn
+  useEffect(() => {
+    progressRef.current = progress
+  }, [progress])
 
   // Enhanced loading messages based on real progress
-  const getContextualMessage = (progress: number, realProgress: LoadingProgress) => {
+  const getContextualMessage = (progress: number) => {
     if (progress < 20) return 'Loading core assets...'
     if (progress < 40) return 'Initializing components...'
     if (progress < 60) return 'Preparing data infrastructure...'
@@ -234,7 +240,7 @@ export function HydrationSafeLoading() {
     }
 
     // Update message based on real progress
-    const newMessage = getContextualMessage(progress, realProgress)
+    const newMessage = getContextualMessage(progress)
     if (newMessage !== loadingMessage) {
       setLoadingMessage(newMessage)
     }
@@ -244,7 +250,7 @@ export function HydrationSafeLoading() {
         clearTimeout(timeoutRef.current)
       }
     }
-  }, [showLoading, progress, realProgress, loadingState])
+  }, [showLoading, progress, realProgress, loadingState, loadingMessage, trackAssetProgress, trackComponentProgress, trackDataProgress])
 
   // Retry mechanism for errors
   const handleRetry = () => {

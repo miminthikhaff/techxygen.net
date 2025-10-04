@@ -9,19 +9,17 @@ import { Label } from '@/components/ui/label'
 import { DataTable, SelectColumnCell, SelectColumnHeader } from '@/components/ui/data-table'
 import { type ColumnDef } from '@tanstack/react-table'
 import UserForm from '@/components/ui/user-form'
-import { createUser, updateUser, deleteUser as svcDeleteUser, type AdminUser as AdminUserType, ROLE_META } from '@/lib/admin/users'
-import { useNotifications } from '@/contexts/notification-context'
+import { createUser, updateUser, deleteUser as svcDeleteUser, type AdminUser as AdminUserType } from '@/lib/admin/users'
 import { 
   UserPlus, 
   Edit, 
   Trash2, 
   Shield,
-  Mail,
-  Calendar,
+  
   CheckCircle,
   XCircle,
   Save,
-  Search,
+  
   
 } from 'lucide-react'
 import { ArrowUpDown } from 'lucide-react'
@@ -30,13 +28,11 @@ type AdminUser = AdminUserType
 
 export default function UsersPage() {
   const adminProfile = { role: 'super_admin' as const }
-  const { addNotification } = useNotifications()
   const [users, setUsers] = useState<AdminUser[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isCreating, setIsCreating] = useState(false)
   const [editingUser, setEditingUser] = useState<AdminUser | null>(null)
   const [pendingDelete, setPendingDelete] = useState<{ user: AdminUser; timer: number } | null>(null)
-  const [searchTerm, setSearchTerm] = useState('')
   const [newUser, setNewUser] = useState({
     name: '',
     email: '',
@@ -82,10 +78,7 @@ export default function UsersPage() {
     setIsLoading(false)
   }, [])
 
-  const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const filteredUsers = users
 
   const getRoleBadge = (role: string) => {
     const roleConfig = {
@@ -329,7 +322,12 @@ export default function UsersPage() {
                   submitLabel="Create User"
                   onCancel={() => setIsCreating(false)}
                   onSubmit={async (payload) => {
-                    setNewUser(payload)
+                    setNewUser({
+                      name: payload.name,
+                      email: payload.email,
+                      role: payload.role,
+                      password: payload.password ?? '',
+                    })
                     await handleCreateUser()
                   }}
                 />

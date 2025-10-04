@@ -14,19 +14,11 @@ import {
   type VisibilityState,
 } from '@tanstack/react-table'
 
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from 'lucide-react'
+import { ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from './checkbox'
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from './dropdown-menu'
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from './dropdown-menu'
 import {
   Table,
   TableBody,
@@ -153,7 +145,7 @@ export function DataTable<TData, TValue>({ columns, data, filterColumn, filterPl
 }
 
 // Helper components for common patterns
-export function SelectColumnHeader<TData>({ table }: { table: any }) {
+export function SelectColumnHeader({ table }: { table: { getIsAllPageRowsSelected: () => boolean; getIsSomePageRowsSelected: () => boolean; toggleAllPageRowsSelected: (v: boolean) => void } }) {
   return (
     <Checkbox
       checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
@@ -163,7 +155,7 @@ export function SelectColumnHeader<TData>({ table }: { table: any }) {
   )
 }
 
-export function SelectColumnCell<TData>({ row }: { row: any }) {
+export function SelectColumnCell({ row }: { row: { getIsSelected: () => boolean; toggleSelected: (v: boolean) => void } }) {
   return (
     <Checkbox
       checked={row.getIsSelected()}

@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { User, Session } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
@@ -37,7 +37,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const supabase = createClient()
 
-  const fetchAdminProfile = async (userId: string) => {
+  const fetchAdminProfile = useCallback(async (userId: string) => {
     try {
       const { data, error } = await supabase
         .from('admin_profiles')
@@ -56,7 +56,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.error('Error fetching admin profile:', error)
       setAdminProfile(null)
     }
-  }
+  }, [supabase])
 
   useEffect(() => {
     // Get initial session
@@ -103,7 +103,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       clearTimeout(timeout)
       subscription.unsubscribe()
     }
-  }, [supabase.auth])
+  }, [supabase.auth, fetchAdminProfile])
 
 
   const signIn = async (email: string, password: string) => {
