@@ -221,7 +221,7 @@ export function Footer() {
                 <Mail className="h-6 w-6 text-[#3A0519] dark:text-[#A53860]" />
               </div>
               <div>
-                <p className="font-semibold text-slate-900 dark:text-white">Enterprise Email</p>
+                <p className="font-semibold text-slate-900 dark:text-white">Email</p>
                 <p className="text-sm text-slate-600 dark:text-slate-300">info@techxygen.net</p>
               </div>
             </div>
@@ -231,7 +231,7 @@ export function Footer() {
                 <Phone className="h-6 w-6 text-[#670D2F] dark:text-[#EF88AD]" />
               </div>
               <div>
-                <p className="font-semibold text-slate-900 dark:text-white">Enterprise Hotline</p>
+                <p className="font-semibold text-slate-900 dark:text-white">Hotline</p>
                 <p className="text-sm text-slate-600 dark:text-slate-300">+94 11 234 5678</p>
               </div>
             </div>
@@ -241,7 +241,7 @@ export function Footer() {
                 <MapPin className="h-6 w-6 text-[#A53860] dark:text-[#EF88AD]" />
               </div>
               <div>
-                <p className="font-semibold text-slate-900 dark:text-white">Global Headquarters</p>
+                <p className="font-semibold text-slate-900 dark:text-white">Location</p>
                 <p className="text-sm text-slate-600 dark:text-slate-300">Colombo, Sri Lanka</p>
               </div>
             </div>

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ExternalLink, Github, Filter, Award, Star, ArrowRight, Eye, Calendar, Code2 } from 'lucide-react'
@@ -209,9 +210,11 @@ export function Portfolio({ projects }: PortfolioProps) {
               <Button asChild size="lg" className="w-full sm:w-auto bg-gradient-to-r from-[#3A0519] to-[#A53860] hover:from-[#670D2F] hover:to-[#EF88AD] rounded-full px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
                 <a href="/contact">Schedule Enterprise Consultation</a>
               </Button>
-              <Button variant="outline" size="lg" className="w-full sm:w-auto border-2 border-[#A53860] text-[#3A0519] hover:bg-[#A53860] hover:text-white dark:border-[#EF88AD] dark:text-[#EF88AD] dark:hover:bg-[#EF88AD] dark:hover:text-[#3A0519] rounded-full px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg transition-all duration-300 transform hover:scale-105">
-                <ArrowRight className="mr-2 h-5 w-5" />
-                View All Case Studies
+              <Button asChild variant="outline" size="lg" className="w-full sm:w-auto border-2 border-[#A53860] text-[#3A0519] hover:bg-[#A53860] hover:text-white dark:border-[#EF88AD] dark:text-[#EF88AD] dark:hover:bg-[#EF88AD] dark:hover:text-[#3A0519] rounded-full px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg transition-all duration-300 transform hover:scale-105">
+                <Link href="/case-studies" aria-label="View all case studies">
+                  <ArrowRight className="mr-2 h-5 w-5" />
+                  View All Case Studies
+                </Link>
               </Button>
             </div>
           </div>

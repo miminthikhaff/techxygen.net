@@ -102,9 +102,11 @@ export function Hero() {
                     <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </Button>
-                 <Button variant="outline" size="lg" className="text-base md:text-lg px-8 md:px-10 py-5 md:py-6 rounded-full border-2 border-[#A53860] text-[#3A0519] hover:bg-[#A53860] hover:text-white dark:border-[#EF88AD] dark:text-[#EF88AD] dark:hover:bg-[#EF88AD] dark:hover:text-[#3A0519] transition-all duration-300 transform hover:scale-105 group w-full md:w-auto">
-                  <Play className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
-                  See recent work
+                <Button asChild variant="outline" size="lg" className="text-base md:text-lg px-8 md:px-10 py-5 md:py-6 rounded-full border-2 border-[#A53860] text-[#3A0519] hover:bg-[#A53860] hover:text-white dark:border-[#EF88AD] dark:text-[#EF88AD] dark:hover:bg-[#EF88AD] dark:hover:text-[#3A0519] transition-all duration-300 transform hover:scale-105 group w-full md:w-auto">
+                  <Link href="/#portfolio" aria-label="See recent work">
+                    <Play className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
+                    See recent work
+                  </Link>
                 </Button>
                </motion.div>
 
