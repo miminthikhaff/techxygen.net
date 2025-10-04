@@ -191,10 +191,10 @@ export function Hero() {
                         <div className="absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-br from-[#EF88AD90] to-[#3A051980]">
                           <div className="h-full w-full rounded-2xl bg-white/85 dark:bg-slate-900/70 backdrop-blur-sm border border-white/30 dark:border-slate-700/60 shadow-xl p-4 flex flex-col justify-between relative overflow-hidden">
                             <div className="pointer-events-none absolute -top-6 left-0 right-0 h-16 bg-gradient-to-b from-white/60 to-transparent dark:from-slate-700/30"></div>
-                            <span className="inline-flex items-center text-xs px-2 py-0.5 rounded-full border border-[#EF88AD50] text-[#A53860] bg-[#EF88AD14]">Web • AI</span>
+                            <span className="inline-flex items-center text-xs px-2 py-0.5 rounded-full border border-[#EF88AD50] text-[#A53860] bg-[#EF88AD14]">AI/ML · KYC</span>
                             <div>
-                              <p className="text-sm font-semibold text-slate-900 dark:text-slate-50">Fintech onboarding</p>
-                              <p className="text-xs text-slate-600 dark:text-slate-300">Live in 4 weeks</p>
+                              <p className="text-sm font-semibold text-slate-900 dark:text-slate-50">KYC onboarding portal</p>
+                              <p className="text-xs text-slate-600 dark:text-slate-300">MVP in 4 weeks • +14% conversion</p>
                             </div>
                           </div>
                         </div>
@@ -214,10 +214,10 @@ export function Hero() {
                         <div className="absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-br from-[#3A051980] to-[#EF88AD90]">
                           <div className="h-full w-full rounded-2xl bg-white/85 dark:bg-slate-900/70 backdrop-blur-sm border border-white/30 dark:border-slate-700/60 shadow-xl p-4 flex flex-col justify-between relative overflow-hidden">
                             <div className="pointer-events-none absolute -top-6 left-0 right-0 h-16 bg-gradient-to-b from-white/60 to-transparent dark:from-slate-700/30"></div>
-                            <span className="inline-flex items-center text-xs px-2 py-0.5 rounded-full border border-[#3A051950] text-[#3A0519] dark:text-[#EF88AD] bg-[#3A051914]">Infra</span>
+                            <span className="inline-flex items-center text-xs px-2 py-0.5 rounded-full border border-[#3A051950] text-[#3A0519] dark:text-[#EF88AD] bg-[#3A051914]">Cloud FinOps</span>
                             <div>
-                              <p className="text-sm font-semibold text-slate-900 dark:text-slate-50">Cloud cost tuning</p>
-                              <p className="text-xs text-slate-600 dark:text-slate-300">−32% spend</p>
+                              <p className="text-sm font-semibold text-slate-900 dark:text-slate-50">Cloud spend optimization</p>
+                              <p className="text-xs text-slate-600 dark:text-slate-300">32% cost reduction • 45 days</p>
                             </div>
                           </div>
                         </div>
@@ -238,8 +238,8 @@ export function Hero() {
                           <div className="h-full w-full rounded-2xl bg-white/85 dark:bg-slate-900/70 backdrop-blur-sm border border-white/30 dark:border-slate-700/60 shadow-xl p-4 flex items-center justify-between relative overflow-hidden">
                             <div className="pointer-events-none absolute -top-6 left-0 right-0 h-16 bg-gradient-to-b from-white/60 to-transparent dark:from-slate-700/30"></div>
                             <div>
-                              <p className="text-sm font-semibold text-slate-900 dark:text-slate-50">Internal tools suite</p>
-                              <p className="text-xs text-slate-600 dark:text-slate-300">NPS 65</p>
+                              <p className="text-sm font-semibold text-slate-900 dark:text-slate-50">Internal developer platform</p>
+                              <p className="text-xs text-slate-600 dark:text-slate-300">NPS 72 (n=180) • 5x deploys/day</p>
                             </div>
                             <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-[#A53860] to-[#EF88AD] opacity-80" />
                           </div>
