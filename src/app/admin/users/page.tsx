@@ -10,6 +10,7 @@ import { DataTable, SelectColumnCell, SelectColumnHeader } from '@/components/ui
 import { type ColumnDef } from '@tanstack/react-table'
 import UserForm from '@/components/ui/user-form'
 import { createUser, updateUser, deleteUser as svcDeleteUser, type AdminUser as AdminUserType, ROLE_META } from '@/lib/admin/users'
+import { useNotifications } from '@/contexts/notification-context'
 import { 
   UserPlus, 
   Edit, 
@@ -29,10 +30,12 @@ type AdminUser = AdminUserType
 
 export default function UsersPage() {
   const adminProfile = { role: 'super_admin' as const }
+  const { addNotification } = useNotifications()
   const [users, setUsers] = useState<AdminUser[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isCreating, setIsCreating] = useState(false)
   const [editingUser, setEditingUser] = useState<AdminUser | null>(null)
+  const [pendingDelete, setPendingDelete] = useState<{ user: AdminUser; timer: number } | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [newUser, setNewUser] = useState({
     name: '',
@@ -108,11 +111,28 @@ export default function UsersPage() {
     setIsCreating(false)
   }
 
-  const handleDeleteUser = async (userId: string) => {
-    if (confirm('Are you sure you want to delete this user?')) {
-      await svcDeleteUser(userId)
-      setUsers(prev => prev.filter(user => user.id !== userId))
+  const handleDeleteUser = async (user: AdminUser) => {
+    const typed = window.prompt(`Type the user's email (${user.email}) to confirm deletion:`)
+    if (typed !== user.email) {
+      alert('Email did not match. Deletion cancelled.')
+      return
     }
+    // If another deletion is pending, finalize it now
+    if (pendingDelete) {
+      clearTimeout(pendingDelete.timer)
+      await svcDeleteUser(pendingDelete.user.user_id)
+    }
+
+    // Optimistically remove from list
+    setUsers(prev => prev.filter(u => u.id !== user.id))
+
+    // Schedule hard delete in 5s
+    const timer = window.setTimeout(async () => {
+      await svcDeleteUser(user.user_id)
+      setPendingDelete(null)
+    }, 5000)
+
+    setPendingDelete({ user, timer })
   }
 
   const handleToggleUserStatus = (userId: string) => {
@@ -121,10 +141,11 @@ export default function UsersPage() {
     ))
   }
 
-  const handleUpdateUser = (e: React.FormEvent) => {
+  const handleUpdateUser = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!editingUser) return
-    setUsers(prev => prev.map(u => (u.id === editingUser.id ? editingUser : u)))
+    const updated = await updateUser(editingUser)
+    setUsers(prev => prev.map(u => (u.id === updated.id ? updated : u)))
     setEditingUser(null)
   }
 
@@ -215,7 +236,7 @@ export default function UsersPage() {
             <Edit className="h-4 w-4" />
           </Button>
           {row.original.role !== 'super_admin' && (
-            <Button variant="outline" size="icon" aria-label="Delete user" className="text-red-600 hover:text-red-700" onClick={() => handleDeleteUser(row.original.id)}>
+            <Button variant="outline" size="icon" aria-label="Delete user" className="text-red-600 hover:text-red-700" onClick={() => handleDeleteUser(row.original)}>
               <Trash2 className="h-4 w-4" />
             </Button>
           )}
@@ -253,6 +274,43 @@ export default function UsersPage() {
             <DataTable columns={columns} data={filteredUsers} filterColumn="email" filterPlaceholder="Filter users by email..." />
           </CardContent>
         </Card>
+
+        {/* Undo Toast */}
+        {pendingDelete && (
+          <div className="fixed bottom-4 right-4 z-50 rounded-lg border border-slate-200 dark:border-slate-700/60 bg-white dark:bg-slate-900 shadow-xl p-4 w-[320px]">
+            <div className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-1">User deleted</div>
+            <div className="text-xs text-slate-600 dark:text-slate-400 mb-3">{pendingDelete.user.name} will be permanently removed in 5 seconds.</div>
+            <div className="flex gap-2 justify-end">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={async () => {
+                  // finalize now
+                  if (pendingDelete) {
+                    clearTimeout(pendingDelete.timer)
+                    await svcDeleteUser(pendingDelete.user.user_id)
+                  }
+                  setPendingDelete(null)
+                }}
+              >
+                Dismiss
+              </Button>
+              <Button
+                size="sm"
+                className="bg-gradient-to-r from-[#3A0519] to-[#A53860] hover:from-[#670D2F] hover:to-[#EF88AD]"
+                onClick={() => {
+                  if (!pendingDelete) return
+                  clearTimeout(pendingDelete.timer)
+                  // Restore user optimistically
+                  setUsers(prev => [pendingDelete.user, ...prev])
+                  setPendingDelete(null)
+                }}
+              >
+                Undo
+              </Button>
+            </div>
+          </div>
+        )}
 
         {/* Create User Modal */}
         {isCreating && (

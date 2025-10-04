@@ -25,11 +25,17 @@ export async function createUser(user: Pick<AdminUser, 'name' | 'email' | 'role'
 }
 
 export async function updateUser(user: AdminUser): Promise<AdminUser> {
+  // Call internal API to update admin_profiles (service role on server)
+  await fetch(`/api/admin/users/${user.user_id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: user.name, email: user.email, role: user.role }),
+  })
   return user
 }
 
 export async function deleteUser(id: string): Promise<void> {
-  return
+  await fetch(`/api/admin/users/${id}`, { method: 'DELETE' })
 }
 
 export const ROLE_META: Record<AdminRole, { label: string; color: string }> = {
